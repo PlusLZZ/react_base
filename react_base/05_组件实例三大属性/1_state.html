@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xxx</title>
+</head>
+<body>
+<!--准备好一个容器-->
+<div id="test">
+
+</div>
+
+<!-- 引入核心库 -->
+<script src="../js/react.development.js"></script>
+<!-- 引入dom支持 -->
+<script src="../js/react-dom.development.js"></script>
+<!-- 引入babel -->
+<script src="../js/babel.min.js"></script>
+
+<!-- 这里需要写babel -->
+<script type="text/babel">
+    // 1.创建组件
+    class Weather extends React.Component{
+        constructor(props) {
+            super(props);
+            this.state = {
+                isHot: true
+            }
+            // 解决change方法的指向问题
+            this.change = this.change.bind(this)
+        }
+
+        // render调用几次?1+n次,每次对state的更新都会触发render
+        render(){
+            console.log(this)
+            return(
+                <h2 onClick={this.change}>今天天气很{this.state.isHot ? '炎热' : '凉爽'}</h2>
+            )
+        }
+
+        change() {
+            // 由于这个方法是作为onClick的回调,不是通过实例调用的,是直接调用
+            // 类中的方法默认开启了严格模式,所以change中的this是undefined
+            // state不可直接更改,要借助一个内置的API去更改,且更新的一种合并操作
+            let isHot = this.state.isHot
+            // 状态必须通过setState进行更新
+            this.setState({isHot: !isHot})
+        }
+    }
+    // 2.渲染组件到页面
+    ReactDOM.render(<Weather />,document.getElementById('test'))
+</script>
+
+</body>
+</html>
